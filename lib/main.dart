@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
@@ -7,8 +9,15 @@ class MyApp extends StatelessWidget {
   var txtReais = TextEditingController();
   var txtDolares = TextEditingController();
 
-  void converter () {
-    double cotacao = 5.71;
+  void converter () async {
+
+    var url = 'https://economia.awesomeapi.com.br/json/last/USD-BRL';
+
+    var response = await http.get(Uri.parse(url));
+
+    var dados = json.decode(response.body);
+
+    double cotacao = double.parse(dados["USDBRL"]["ask"]);
     double reais = double.parse(txtReais.text);
     double dolares = reais / cotacao;
     txtDolares.text = dolares.toString();
